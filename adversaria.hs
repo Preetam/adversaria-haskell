@@ -11,6 +11,7 @@ dispatch = [ ("set", Main.set)
            , ("get", Main.get)
            , ("init", Main.init)
            , ("print", Main.print)
+           , ("range", Main.range)
            ]
 
 main = do
@@ -26,6 +27,12 @@ set [file, key, val] = do
 	removeFile file
 	renameFile (file++".tmp") file
 
+range [file, startKey, endKey] = do
+	let m = readDBFromFile file
+	tmp <- m
+	let tmp2 = Data.Map.filterWithKey (\k _ -> k >= (read startKey :: Integer)) (Data.Map.filterWithKey (\k _ -> k <= (read endKey :: Integer)) tmp) :: Map Integer Float
+	putStrLn (JSON.encode tmp2)
+
 init :: [String] -> IO ()
 init [file] = do
 	let tmp = Data.Map.empty
@@ -37,7 +44,7 @@ get file = putStr "get"
 print [file] = do
 	let m = readDBFromFile file
 	tmp <- m
-	putStr (JSON.encode tmp)
+	putStrLn (JSON.encode tmp)
 
 readDBFromFile :: String -> IO (Map Integer Float)
 readDBFromFile file = Binary.decodeFile file
