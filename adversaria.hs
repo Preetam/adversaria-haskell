@@ -46,5 +46,7 @@ print [file] = do
 	tmp <- m
 	putStrLn (JSON.encode tmp)
 
+
+
 readDBFromFile :: String -> IO (Map Integer Float)
 readDBFromFile file = Binary.decodeFile file
